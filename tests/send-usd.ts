@@ -3,7 +3,7 @@ import { Program } from "@coral-xyz/anchor";
 import { SendUsd } from "../target/types/send_usd";
 import { PythSolanaReceiver } from "@pythnetwork/pyth-solana-receiver";
 import { PythCluster } from "@pythnetwork/client"
-import { Keypair } from "@solana/web3.js";
+import { Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 
 describe("send-usd", () => {
@@ -22,7 +22,7 @@ describe("send-usd", () => {
   const payer = wallet.payer;
   const pythSolAcc = new PublicKey(solUsdPriceFeedAccount);
   const destination = Keypair.generate();
-  const amount = new anchor.BN(1);
+  const amount = new anchor.BN(2.69);
   
   // Add your test here.
   it("Sol sent ! ⚡", async () => {
@@ -39,9 +39,9 @@ describe("send-usd", () => {
     })
     .rpc();
 
-    const sol = connection.getTokenAccountBalance(destination.publicKey);
+    const sol = await connection.getBalance(destination.publicKey);
 
-    console.log(`Sent ${sol} sol to ${destination.publicKey.toBase58()}`)
+    console.log(`Sent ${sol / LAMPORTS_PER_SOL} sol to ${destination.publicKey.toBase58()}`)
     console.log("Your transaction signature", tx);
   });
 });
